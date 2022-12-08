@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservations</title>
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Reservations</h1>
+    <table>
+        <tr>
+            <th>Rental name</th>
+            <th>ID</th>
+            <th>Checkin</th>
+            <th>Checkout</th>
+            <th>Previous reservation ID</th>
+        </tr>
+        {% for row in reservations %}
+        <tr>
+            <td>{{ row.reservation.rental.name }}</td>
+            <td>{{ row.reservation.id }}</td>
+            <td>{{ row.reservation.checkin }}</td>
+            <td>{{ row.reservation.checkout }}</td>
+            <td>{{ row.prev_reservation_id }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
