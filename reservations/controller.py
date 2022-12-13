@@ -4,9 +4,10 @@ from .models import Rental, Reservation
 def get_reservations():
     reservations = Reservation.objects.all()
     prev_reservation_id = []
-    for r in reservations:
-        rental = Rental.objects.get(id=r.rental.id)
-        prev_reservation = rental.reservation_set.filter(checkout__lt=r.checkin).last()
+    for reservation in reservations:
+        prev_reservation = reservation.rental.reservation_set.filter(
+            checkout__lt=reservation.checkin
+        ).last()
         prev_reservation_id.append(prev_reservation.id if prev_reservation else None)
 
     return [
