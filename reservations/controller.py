@@ -1,16 +1,14 @@
-from .models import Rental, Reservation
+from django.db.models import F, Max, Q
+
+from .models import Reservation
 
 
 def get_reservations():
-    reservations = Reservation.objects.all()
-    prev_reservation_id = []
-    for reservation in reservations:
-        prev_reservation = reservation.rental.reservation_set.filter(
-            checkout__lt=reservation.checkin
-        ).last()
-        prev_reservation_id.append(prev_reservation.id if prev_reservation else None)
+    reservations = Reservation.objects.annotate(
+        previous_reservation=Max(
+            "rental__reservation__id",
+            filter=Q(rental__reservation__checkin__lt=F("checkin")),
+        )
+    ).all()
 
-    return [
-        {"reservation": r, "prev_reservation_id": p}
-        for r, p in zip(reservations, prev_reservation_id)
-    ]
+    return reservations
