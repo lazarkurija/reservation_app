@@ -26,13 +26,13 @@
             <th>Checkout</th>
             <th>Previous reservation ID</th>
         </tr>
-        {% for row in reservations %}
+        {% for reservation in reservations %}
         <tr>
-            <td>{{ row.reservation.rental.name }}</td>
-            <td>{{ row.reservation.id }}</td>
-            <td>{{ row.reservation.checkin }}</td>
-            <td>{{ row.reservation.checkout }}</td>
-            <td>{{ row.prev_reservation_id }}</td>
+            <td>{{ reservation.rental.name }}</td>
+            <td>{{ reservation.id }}</td>
+            <td>{{ reservation.checkin }}</td>
+            <td>{{ reservation.checkout }}</td>
+            <td>{{ reservation.previous_reservation }}</td>
         </tr>
         {% endfor %}
     </table>

@@ -1,15 +1,18 @@
-from .models import Rental, Reservation
+from django.db.models import OuterRef, Subquery
+
+from .models import Reservation
 
 
 def get_reservations():
-    reservations = Reservation.objects.all()
-    prev_reservation_id = []
-    for r in reservations:
-        rental = Rental.objects.get(id=r.rental.id)
-        prev_reservation = rental.reservation_set.filter(checkout__lt=r.checkin).last()
-        prev_reservation_id.append(prev_reservation.id if prev_reservation else None)
+    reservations = Reservation.objects.annotate(
+        previous_reservation=Subquery(
+            Reservation.objects.filter(
+                rental=OuterRef("rental"),
+                checkout__lt=OuterRef("checkin"),
+            )
+            .order_by("-checkin")
+            .values("id")
+        )
+    ).all()
 
-    return [
-        {"reservation": r, "prev_reservation_id": p}
-        for r, p in zip(reservations, prev_reservation_id)
-    ]
+    return reservations
