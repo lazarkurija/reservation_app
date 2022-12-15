@@ -1,13 +1,17 @@
-from django.db.models import F, Max, Q
+from django.db.models import OuterRef, Subquery
 
 from .models import Reservation
 
 
 def get_reservations():
     reservations = Reservation.objects.annotate(
-        previous_reservation=Max(
-            "rental__reservation__id",
-            filter=Q(rental__reservation__checkin__lt=F("checkin")),
+        previous_reservation=Subquery(
+            Reservation.objects.filter(
+                rental=OuterRef("rental"),
+                checkout__lt=OuterRef("checkin"),
+            )
+            .order_by("-checkin")
+            .values("id")
         )
     ).all()
 
